@@ -1,6 +1,6 @@
 # Gentoo Linux Installer
 
-A fully interactive installer for Gentoo Linux, built with Charm's `gum`, that simplifies the installation process while preserving the traditional Gentoo experience.
+A fully interactive installer for Gentoo Linux, built with Charm's `gum`, that simplifies the installation process while preserving the traditional Gentoo experience. If you prefer a classic ncurses interface, a separate `dialog`-based version is also available.
 
 ## Features
 
