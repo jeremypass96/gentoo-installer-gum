@@ -1,0 +1,91 @@
+#!/bin/bash
+# cpu-optimizations.sh — Gentoo installer module for CPU tuning and make.conf optimization.
+# Copyright (C) 2026 Jeremy Passarelli <recordguy96@aol.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+# ---------------------------------------------------
+# Gentoo Linux Installer Module: CPU Optimization
+# ---------------------------------------------------
+# Provides:
+# - Detects the installed CPU.
+# - Optimizes GCC compiler flags.
+# - Configures CPU_FLAGS_X86.
+# - Sets RUSTFLAGS and MAKEOPTS automatically.
+#
+# Notes:
+# Intended to be called by the Gentoo Linux Installer
+# during installation.
+# ---------------------------------------------------
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/common.sh"
+require_root
+require_chroot
+screen
+
+status "Detecting CPU + GCC tuning info..."
+CPU_MODEL=$(grep -m1 'model name' /proc/cpuinfo | cut -d: -f2- | sed 's/^ *//')
+info "CPU model: ${CPU_MODEL}"
+
+# Ask GCC what it actually uses for -march/-mtune when we say -march=native.
+GCC_MARCH=$(gcc -Q -march=native --help=target 2>/dev/null | awk '$1=="-march=" {print $2}')
+GCC_MTUNE=$(gcc -Q -march=native --help=target 2>/dev/null | awk '$1=="-mtune=" {print $2}')
+
+[ -z "$GCC_MARCH" ] && GCC_MARCH="native"
+[ -z "$GCC_MTUNE" ] && GCC_MTUNE="native"
+
+info "GCC reports: -march=${GCC_MARCH}, -mtune=${GCC_MTUNE}"
+
+EXTRA_FLAGS=""
+if echo "$CPU_MODEL" | grep -qi 'FX(tm)-8350'; then
+	info "FX(tm)-8350 detected, adding -mfpmath=sse..."
+	EXTRA_FLAGS="-mfpmath=sse"
+fi
+
+NEW_COMMON_FLAGS="-O2 -pipe -march=native -mtune=${GCC_MTUNE} ${EXTRA_FLAGS}"
+status "Updating COMMON_FLAGS in /etc/portage/make.conf to:"
+echo "    ${NEW_COMMON_FLAGS}"
+
+# Replace COMMON_FLAGS line.
+if grep -q '^COMMON_FLAGS=' /etc/portage/make.conf; then
+	sed -i "s|^COMMON_FLAGS=\".*\"|COMMON_FLAGS=\"${NEW_COMMON_FLAGS}\"|" /etc/portage/make.conf
+else
+	echo "COMMON_FLAGS=\"${NEW_COMMON_FLAGS}\"" >>/etc/portage/make.conf
+fi
+
+# CPU feature flags (CPU_FLAGS_X86), used by ebuilds (NOT -march).
+status "Installing cpuid2cpuflags and generating CPU_FLAGS_X86..."
+emerge --oneshot app-portage/cpuid2cpuflags
+echo "*/* $(cpuid2cpuflags)" >/etc/portage/package.use/00cpu-flags
+
+# Set Rust optimizations.
+status "Setting RUSTFLAGS..."
+if grep -q '^RUSTFLAGS=' /etc/portage/make.conf; then
+	sed -i 's|^RUSTFLAGS=".*"|RUSTFLAGS="-C target-cpu=native"|' /etc/portage/make.conf
+else
+	echo 'RUSTFLAGS="-C target-cpu=native"' >>/etc/portage/make.conf
+fi
+
+# Set MAKEOPTS based on CPU cores (nproc + 1, like -j9 on 8 cores).
+CORES=$(nproc 2>/dev/null)
+JOBS=$((CORES + 1))
+
+status "Setting MAKEOPTS to -j${JOBS} (detected ${CORES} cores)..."
+if grep -q '^MAKEOPTS=' /etc/portage/make.conf; then
+	sed -i "s|^MAKEOPTS=\".*\"|MAKEOPTS=\"-j${JOBS}\"|" /etc/portage/make.conf
+else
+	echo "MAKEOPTS=\"-j${JOBS}\"" >>/etc/portage/make.conf
+fi

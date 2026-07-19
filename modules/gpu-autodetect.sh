@@ -1,0 +1,221 @@
+#!/bin/bash
+# gpu-autodetect.sh — Gentoo installer module for GPU detection and VIDEO_CARDS configuration.
+# Copyright (C) 2026 Jeremy Passarelli <recordguy96@aol.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+# -------------------------------------------------------
+# Gentoo Linux Installer Module: GPU Configuration
+# -------------------------------------------------------
+# Provides:
+# - Automatically detects the installed GPU.
+# - Configures VIDEO_CARDS for the detected hardware.
+# - Automatically maps supported AMD GPUs to the correct
+#   Radeon driver family.
+# - Prompts for manual selection when automatic detection
+#   is not possible.
+#
+# Notes:
+# Intended to be called by the Gentoo Linux Installer
+# during installation.
+# -------------------------------------------------------
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/common.sh"
+require_root
+require_chroot
+screen
+
+# Ensure lspci exists
+if ! command -v lspci >/dev/null 2>&1; then
+	warning "sys-apps/pciutils (lspci) not found, emerging..."
+	emerge -1q sys-apps/pciutils || {
+		failure "Failed to install pciutils; cannot continue."
+		exit 1
+	}
+fi
+
+GPU_LINE=$(lspci -nn | grep -Ei 'VGA compatible controller|3D controller|Display controller' | head -n1)
+
+if [ -z "$GPU_LINE" ]; then
+	warning "No GPU found via lspci. Not touching VIDEO_CARDS."
+	exit 0
+fi
+
+GPU_VENDOR="unknown"
+VIDEO_FLAGS=""
+
+case "$GPU_LINE" in
+*VMware* | *SVGA\ II* | *vmwgfx*)
+	GPU_VENDOR="vmware"
+	VIDEO_FLAGS="vmware"
+	;;
+
+*VirtualBox* | *InnoTek* | *Oracle\ Corporation* | *VBoxVGA* | *VMSVGA*)
+	GPU_VENDOR="virtualbox"
+	VIDEO_FLAGS="vmware"
+	;;
+
+*Red\ Hat* | *QXL* | *Spice*)
+	GPU_VENDOR="qxl"
+	VIDEO_FLAGS="qxl"
+	;;
+
+*NVIDIA* | *GeForce*)
+	GPU_VENDOR="nvidia"
+	VIDEO_FLAGS="nvidia"
+	;;
+
+*Intel* | *\ Corporation\ UHD* | *\ Iris* | *HD\ Graphics*)
+	GPU_VENDOR="intel"
+	# Modern Intel per Gentoo docs
+	VIDEO_FLAGS="intel i965 iris"
+	;;
+
+*AMD* | *ATI*)
+	GPU_VENDOR="amd"
+	;;
+esac
+
+# ---------------------------
+# AMD family selection (Radeon)
+# ---------------------------
+
+choose_amd_family() {
+	local gpu_text="$1"
+	local family=""
+	local flags=""
+
+	# Try some automatic matches first, based on Gentoo wiki table
+
+	# Southern Islands: CAPE VERDE, PITCAIRN, TAHITI, OLAND, HAINAN
+	if echo "$gpu_text" | grep -qi 'Cape Verde\|Pitcairn\|Tahiti\|Oland\|Hainan'; then
+		family="Southern Islands"
+		flags="radeon radeonsi"
+		echo "x11-libs/libdrm video_cards_amdgpu" >/etc/portage/package.use/libdrm
+		chmod go+r /etc/portage/package.use/libdrm
+	fi
+
+	# Sea Islands: BONAIRE, KABINI, MULLINS, KAVERI, HAWAII
+	if echo "$gpu_text" | grep -qi 'Bonaire\|Kabini\|Mullins\|Kaveri\|Hawaii'; then
+		family="Sea Islands"
+		flags="radeon radeonsi"
+		echo "x11-libs/libdrm video_cards_amdgpu" >/etc/portage/package.use/libdrm
+		chmod go+r /etc/portage/package.use/libdrm
+	fi
+
+	if [ -n "$family" ]; then
+		AMD_FAMILY="$family"
+		VIDEO_FLAGS="$flags"
+		return
+	fi
+
+	# If we reach here, we can't reliably guess – ask the user.
+	warning "Cannot safely determine exact AMD family from:"
+	echo "    $gpu_text"
+	step "Please choose the correct family according to the Gentoo wiki."
+	echo
+
+	local choice
+
+	choice=$(
+		gum choose \
+			--header "Detected: $gpu_text
+
+Select your GPU family (see Gentoo Radeon Wiki):" \
+			"r100 - Radeon 7xxx / 320-345 (very old)" \
+			"r200 - Radeon 8xxx-9250" \
+			"r300 - X1300-X2300 / HD2300 etc." \
+			"r600 - HD2400-HD6990" \
+			"south - Southern Islands" \
+			"sea - Sea Islands"
+	)
+
+	choice=${choice%% *}
+
+	case "$choice" in
+	r100)
+		AMD_FAMILY="R100"
+		VIDEO_FLAGS="radeon r100"
+		;;
+	r200)
+		AMD_FAMILY="R200"
+		VIDEO_FLAGS="radeon r200"
+		;;
+	r300)
+		AMD_FAMILY="R300-R500"
+		VIDEO_FLAGS="radeon r300"
+		;;
+	r600)
+		AMD_FAMILY="R600/R700/Evergreen/Northern Islands"
+		VIDEO_FLAGS="radeon r600"
+		;;
+	south)
+		AMD_FAMILY="Southern Islands"
+		VIDEO_FLAGS="radeon radeonsi"
+		;;
+	sea)
+		AMD_FAMILY="Sea Islands"
+		VIDEO_FLAGS="radeon radeonsi"
+		;;
+	esac
+
+	info "AMD family selected: $AMD_FAMILY"
+	info "VIDEO_CARDS -> $VIDEO_FLAGS"
+	echo
+}
+
+if [ "$GPU_VENDOR" = "amd" ]; then
+	choose_amd_family "$GPU_LINE"
+fi
+
+if [ "$GPU_VENDOR" = "unknown" ]; then
+	warning "Unknown GPU vendor. Not modifying VIDEO_CARDS."
+	exit 0
+fi
+
+if [ "$GPU_VENDOR" = "vmware" ]; then
+	emerge -qv app-emulation/open-vm-tools
+	rc-service vmware-tools start
+	rc-update add vmware-tools
+	cat <<EOF >/etc/portage/package.use/vmware
+x11-libs/libdrm libkms
+media-libs/mesa xa
+EOF
+	chmod go+r /etc/portage/package.use/vmware
+fi
+
+if [ "$GPU_VENDOR" = "virtualbox" ]; then
+	emerge -qv app-emulation/virtualbox-guest-additions
+	rc-update add virtualbox-guest-additions
+	rc-update add dbus
+	rc-service virtualbox-guest-additions start
+	gpasswd -a "$name" vboxguest
+	modprobe vboxdrv
+	echo vboxdrv >/etc/modules-load.d/virtualbox.conf
+	cat <<EOF >/etc/portage/package.use/vmware
+x11-libs/libdrm libkms
+media-libs/mesa xa
+EOF
+	chmod go+r /etc/portage/package.use/vmware
+fi
+
+# ---------------------------------------
+# Write /etc/portage/package.use/00video.
+# ---------------------------------------
+cat <<EOF >/etc/portage/package.use/00video
+*/* VIDEO_CARDS: -* $VIDEO_FLAGS
+EOF
+chmod go+r /etc/portage/package.use/00video
