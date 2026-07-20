@@ -30,7 +30,7 @@ require_chroot
 screen
 
 DESKTOP=$(gum choose --label-delimiter=":" --header "Choose a desktop environment to install:" \
-	"KDE Plasma":plasma \
+	"Sonic Desktop Environment (SonicDE)":sonicde \
 	"Xfce":xfce \
 	"MATE":mate \
 	"Cinnamon":cinnamon \

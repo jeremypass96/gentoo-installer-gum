@@ -45,6 +45,7 @@ USE_FILES=(
 	cups
 	hplip
 	kde
+	sonicde
 	xfce
 	mate
 	cinnamon

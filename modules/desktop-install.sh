@@ -29,11 +29,22 @@ screen
 # Desktop-specific installation.
 # ------------------------------
 case "$DESKTOP" in
-plasma)
-	status "Installing KDE Plasma..."
-	emerge -qv kde-plasma/plasma-meta kde-apps/kde-apps-meta kde-apps/kdecore-meta kde-plasma/kwallet-pam kde-apps/kcalc kde-apps/kcharselect kde-apps/sweeper kde-misc/kweather sys-block/partitionmanager app-cdr/dolphin-plugins-mountiso kde-misc/kclock kde-misc/kdeconnect kde-apps/okular kde-apps/gwenview kde-apps/filelight kde-apps/ark kde-apps/ffmpegthumbs kde-apps/audiocd-kio kde-apps/kwalletmanager
-
-	if ask_yes_no "Do you want Dolphin to integrate with Git repositories?" yes; then
+sonicde)
+	status "Installing SonicDE..."
+	cat <<EOF >/etc/portage/repos.conf/sonicde.conf
+[sonicde]
+location = /var/db/repos/sonicde
+sync-type = git
+sync-uri = https://github.com/sonicde-gentoo/portage
+EOF
+	emaint sync -r sonicde
+	echo "*/*::sonicde **" >/etc/portage/package.accept_keywords/00-sonicde
+	cat <<EOF >/etc/portage/package.accept_keywords/kde
+kde-plasma/*
+kde-frameworks/*
+EOF
+	emerge -qv sonicde-base/sonic-meta x11-misc/silver-sddm kde-apps/kde-apps-meta kde-apps/kdecore-meta kde-plasma/kwallet-pam kde-apps/kcalc kde-apps/kcharselect kde-apps/sweeper kde-misc/kweather sys-block/partitionmanager app-cdr/dolphin-plugins-mountiso kde-misc/kclock kde-misc/kdeconnect kde-apps/okular kde-apps/gwenview kde-apps/filelight kde-apps/ark kde-apps/ffmpegthumbs kde-apps/audiocd-kio kde-apps/kwalletmanager
+	if ask_yes_no "Do you want Dolphin to integrate with Git repositories?"; then
 		emerge -qv kde-apps/dolphin-plugins-git
 	fi
 
@@ -43,7 +54,7 @@ plasma)
 	cp -v /etc/skel/.config/kdeglobals /home/"$name"/.config/kdeglobals
 	chown "$name":"$name" /home/"$name"/.config/kdeglobals
 
-	if ask_yes_no $'Do you want to install some KDE games?\n\nThis will install the following games:\n- Kapman\n- KPatience\n- KMines\n- Bomber\n- KSnakeDuel\n- Klickety\n- KBlocks\n- KDiamond\n- KBounce\n- KNetWalk\n- KBreakOut' yes; then
+	if ask_yes_no $'Do you want to install some KDE games?\n\nThis will install the following games:\n- Kapman\n- KPatience\n- KMines\n- Bomber\n- KSnakeDuel\n- Klickety\n- KBlocks\n- KDiamond\n- KBounce\n- KNetWalk\n- KBreakOut'; then
 		emerge -qv kde-apps/kapman kde-apps/kpat kde-apps/kmines kde-apps/bomber kde-apps/ksnakeduel kde-apps/klickety kde-apps/kblocks kde-apps/kdiamond kde-apps/kbounce kde-apps/knetwalk kde-apps/kbreakout
 	fi
 

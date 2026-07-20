@@ -158,7 +158,7 @@ fi
 # Optional: Desktop-specific package.use entries.
 # -----------------------------------------------
 case "$DESKTOP" in
-plasma)
+sonicde)
 	cat <<EOF >/etc/portage/package.use/kde
 kde-plasma/plasma-meta -sdk -discover -flatpak -plymouth -thunderbolt -unsupported -wacom -xwayland
 kde-apps/kde-apps-meta -pim -education -games -accessibility -graphics -multimedia -network -sdk -utils
@@ -170,6 +170,10 @@ dev-qt/qtpositioning geoclue
 kde-apps/thumbnailers video
 kde-plasma/powerdevil brightness-control
 app-misc/ddcutil user-permissions
+EOF
+	cat <<EOF >/etc/portage/package.use/sonicde
+sonicde-base/sonic-meta -firewall
+sonicde-base/sonic-win lock
 EOF
 	;;
 
