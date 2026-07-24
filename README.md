@@ -1,11 +1,12 @@
 # Gentoo Linux Installer
-
 A fully interactive installer for Gentoo Linux, built with Charm's `gum`, that simplifies the installation process while preserving the traditional Gentoo experience. If you prefer a classic ncurses interface, a separate `dialog`-based version is also available.
+
+> [!NOTE]
+> An LLM was used as a development aid for portions of this project, including code suggestions, troubleshooting, and documentation. All code has been reviewed, tested, and integrated by the project maintainer.
 
 ## Features
 
 ### Installation
-
 * Fully interactive installer, powered by Charm's `gum`.
 * Automatic disk partitioning and filesystem creation.
 * Automatic swapfile creation.
@@ -16,12 +17,10 @@ A fully interactive installer for Gentoo Linux, built with Charm's `gum`, that s
 * Modular installer architecture for easier maintenance and development.
 
 ### Hardware Detection
-
 * Automatic CPU optimization (`-march` and `-mtune`).
 * Automatic GPU detection and `VIDEO_CARDS` configuration (Intel, AMDGPU, Radeon, NVIDIA).
 
 ### System Configuration
-
 * Interactive Gentoo profile selection.
 * Locale configuration.
 * Timezone selection.
@@ -30,7 +29,6 @@ A fully interactive installer for Gentoo Linux, built with Charm's `gum`, that s
 * Automatic OpenRC service configuration.
 
 ### Desktop Environments
-
 * Interactive desktop environment selection:
   * KDE Plasma
   * Xfce
@@ -39,7 +37,6 @@ A fully interactive installer for Gentoo Linux, built with Charm's `gum`, that s
   * Cinnamon
 
 ### Web Browsers
-
 * Interactive web browser selection:
   * Brave
   * Ungoogled Chromium
@@ -48,7 +45,6 @@ A fully interactive installer for Gentoo Linux, built with Charm's `gum`, that s
   * Helium
 
 ### Optional Components
-
 * KDE games installation.
 * Wireless networking support.
 * Printing support (CUPS).
@@ -57,7 +53,6 @@ A fully interactive installer for Gentoo Linux, built with Charm's `gum`, that s
 * Windows-style hardware notifications.
 
 ### Design
-
 * Modular shell script architecture.
 * Individual installer stages are organized into dedicated modules.
 * Top-level installation scripts orchestrate the installation process.
@@ -65,7 +60,6 @@ A fully interactive installer for Gentoo Linux, built with Charm's `gum`, that s
 ## Script Overview
 
 ### setup.sh
-
 The primary **installation** script, executed from the Gentoo LiveCD/DVD before entering the Gentoo environment.
 
 * Verifies network connectivity, DNS resolution, and HTTPS access.
@@ -84,7 +78,6 @@ The primary **installation** script, executed from the Gentoo LiveCD/DVD before 
 * Enters the installed Gentoo environment using `arch-chroot`.
 
 ### configure.sh
-
 The primary **configuration** script, executed within the Gentoo environment.
 
 * Configures Portage and synchronizes the Gentoo repository.
