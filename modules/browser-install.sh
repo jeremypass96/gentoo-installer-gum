@@ -49,6 +49,7 @@ brave)
 	emerge --sync another-brave-overlay
 	emerge -qv www-client/brave-browser
 	rm -f /usr/share/applications/com.brave.Browser.desktop
+	bash "$SCRIPT_DIR/brave-config.sh"
 	;;
 chromium)
 	status "Installing Chromium..."
