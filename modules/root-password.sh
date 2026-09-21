@@ -27,6 +27,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/common.sh"
 require_root
 require_chroot
+screen
 
 # Set root password.
 set_password root "Enter password for root..." || {
