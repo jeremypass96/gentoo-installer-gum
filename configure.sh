@@ -29,7 +29,7 @@ require_chroot
 mkdir -p /etc/portage/repos.conf
 cp /usr/share/portage/config/repos.conf /etc/portage/repos.conf/gentoo.conf
 
-# Update the Gentoo ebuild repository
+# Update the Gentoo ebuild repository.
 emerge-webrsync
 
 # Select mirrors.
@@ -43,7 +43,7 @@ emerge --sync
 if ! command -v gum >/dev/null 2>&1; then
 	status "Installing required package: gum..."
 	eselect repository enable jaredallard
-	emerge jaredallard --sync || die "Failed to sync jaredallard overlay."
+	emerge --sync jaredallard || die "Failed to sync jaredallard overlay."
 	emerge -q dev-util/gum || die "Failed to install the required package: gum."
 fi
 
