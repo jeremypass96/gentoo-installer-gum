@@ -36,9 +36,11 @@ sleep 1
 
 # Ensure `gum` is available.
 if ! command -v gum >/dev/null; then
-	status "Installing required package: gum..."
+	status "Syncing Portage repos..."
+	emerge-webrsync
 	eselect repository enable jaredallard
 	emerge --sync jaredallard || die "Failed to sync jaredallard overlay."
+	status "Installing required package: gum..."
 	emerge -q dev-util/gum || die "Failed to install the required package: gum."
 fi
 
