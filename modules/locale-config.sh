@@ -107,7 +107,6 @@ while IFS=$'\t' read -r lang label; do
 	LANG_CODE_BY_LABEL["$label"]="$lang"
 done <<<"$lang_lines"
 
-ui_header
 LANG_LABEL_CHOICE=$(
 	gum choose \
 		--header "Choose a language family:" \
