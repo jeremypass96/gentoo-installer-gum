@@ -36,12 +36,11 @@ emerge-webrsync
 emerge -qv1 app-portage/mirrorselect
 mirrorselect -i -o >>/etc/portage/make.conf
 
-# Update repository and system first.
+# Syncing Portage repository.
 emerge --sync
-emerge -avquDN @world
 
 # Install eselect module for adding repositories to the system.
-if ! command -v 'eselect repository' >/dev/dull 2>&1; then
+if ! command -v "$(eselect repository)" >/dev/dull 2>&1; then
 	status "Installing 'repository' eselect module for adding repos to Gentoo."
 	emerge -q app-eselect/eselect-repository
 fi
