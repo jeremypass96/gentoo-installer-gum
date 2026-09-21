@@ -187,6 +187,7 @@ if [ "$GPU_VENDOR" = "unknown" ]; then
 fi
 
 if [ "$GPU_VENDOR" = "vmware" ]; then
+	info "Detected VMware VM, installing open-vm-tools..."
 	emerge -qv app-emulation/open-vm-tools
 	rc-service vmware-tools start
 	rc-update add vmware-tools
@@ -198,6 +199,7 @@ EOF
 fi
 
 if [ "$GPU_VENDOR" = "virtualbox" ]; then
+	info "Detected VirtualBox VM, installing VirtualBox guest additions..."
 	emerge -qv app-emulation/virtualbox-guest-additions
 	rc-update add virtualbox-guest-additions
 	rc-update add dbus
@@ -205,11 +207,11 @@ if [ "$GPU_VENDOR" = "virtualbox" ]; then
 	gpasswd -a "$name" vboxguest
 	modprobe vboxdrv
 	echo vboxdrv >/etc/modules-load.d/virtualbox.conf
-	cat <<EOF >/etc/portage/package.use/vmware
+	cat <<EOF >/etc/portage/package.use/virtualbox
 x11-libs/libdrm libkms
 media-libs/mesa xa
 EOF
-	chmod go+r /etc/portage/package.use/vmware
+	chmod go+r /etc/portage/package.use/virtualbox
 fi
 
 # ---------------------------------------
