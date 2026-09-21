@@ -87,13 +87,13 @@ bash "$SCRIPT_DIR"/modules/gpu-autodetect.sh
 bash "$SCRIPT_DIR"/modules/hostname.sh
 
 # Select a desktop environment.
-source "$SCRIPT_DIR"/modules/desktop-selector.sh
+bash "$SCRIPT_DIR"/modules/desktop-selector.sh
 
 # Backup existing package.use files.
 bash "$SCRIPT_DIR"/modules/package-use-backup.sh
 
 # Configure USE flags.
-source "$SCRIPT_DIR"/modules/package-use.sh
+bash "$SCRIPT_DIR"/modules/package-use.sh
 
 # Update system with new USE flags.
 if ! emerge -avquDN @world; then
