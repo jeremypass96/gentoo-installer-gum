@@ -120,12 +120,18 @@ status "Rebuilding packages using preserved libraries..."
 emerge @preserved-rebuild
 success "System cleanup complete."
 
+# Install eselect repository tool.
+clear
+status "Installing eselect repository tool..."
+emerge -qv app-eselect/eselect-repository
+
 # Install selected desktop environment.
 source "$SCRIPT_DIR/modules/desktop-install.sh"
 
 # Install a better manpager.
 clear
 status "Installing an enhanced man page viewer..."
+eselect repository enable guru && emerge --sync guru
 echo "app-shells/manpager ~amd64" >/etc/portage/package.accept_keywords/manpager
 chmod go+r /etc/portage/package.accept_keywords/manpager
 emerge -qv app-shells/manpager
@@ -157,7 +163,7 @@ emerge -qv sys-kernel/installkernel
 env-update >/dev/null 2>&1
 
 # Install kernel.
-bash "$SCRIPT_DIR"/modules/kernel-install.sh
+bash "$SCRIPT_DIR"/kernel-install.sh
 
 # Install and enable NetworkManager.
 clear
@@ -213,18 +219,13 @@ clear
 status "Installing filesystem tools..."
 emerge -qv sys-fs/xfsprogs sys-fs/ntfs3g
 
-# Install eselect repository tool.
-clear
-status "Installing eselect repository tool..."
-emerge -qv app-eselect/eselect-repository
-
 # Web browser installation.
-bash "$SCRIPT_DIR"/modules/browser-install.sh
+bash "$SCRIPT_DIR"/browser-install.sh
 
 clear
 status "Installing fonts..."
 # Configure Nerd fonts.
-bash "$SCRIPT_DIR"/modules/nerd-fonts-config.sh
+bash "$SCRIPT_DIR"/nerd-fonts-config.sh
 # Install fonts.
 emerge -qv media-fonts/nerd-fonts media-fonts/source-sans
 
@@ -249,13 +250,13 @@ status "Installing sudo..."
 emerge -qv app-admin/sudo
 
 # Install Zsh (and oh-my-zsh from 'mv' overlay).
-source "$SCRIPT_DIR"/modules/zsh-install.sh
+source "$SCRIPT_DIR"/zsh-install.sh
 
 # Install and configure command-line utilities.
-source "$SCRIPT_DIR"/modules/cli-utils-install.sh
+source "$SCRIPT_DIR"/cli-utils-install.sh
 
 # Install and configure Helix editor.
-source "$SCRIPT_DIR"/modules/helix-install.sh
+source "$SCRIPT_DIR"/helix-install.sh
 
 # Fix user's config permissions!
 chown -R "$name":"$name" /home/"$name"/.config
@@ -277,7 +278,7 @@ status "Installing an improved user management utility..."
 emerge -qv app-admin/superadduser
 
 # Install GRUB.
-bash "$SCRIPT_DIR"/modules/grub-install.sh
+bash "$SCRIPT_DIR"/grub-install.sh
 
 # Exit chroot.
 exit
