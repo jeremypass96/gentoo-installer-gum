@@ -56,6 +56,8 @@ emerge -qv dev-util/marksman
 # -------------------------------------------------------
 # Install Homebrew (needed for toplo, shfmt, and dprint).
 # -------------------------------------------------------
+mkdir -p /home/linuxbrew/.linuxbrew
+chown -R "$name:$name" /home/linuxbrew/.linuxbrew
 if su - "$name" -c 'NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'; then
 	for zshrc in /root/.zshrc /home/"$name"/.zshrc /etc/skel/.zshrc; do
 		cat >>"$zshrc" <<'EOF'
@@ -64,5 +66,5 @@ if su - "$name" -c 'NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.gith
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
 EOF
 	done
-	su - "$name" -c 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)" && brew install taplo shfmt dprint'
+	su - "$name" -c 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)" && brew install --no-ask taplo shfmt dprint'
 fi
