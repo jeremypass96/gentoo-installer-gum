@@ -121,9 +121,12 @@ emerge -qv app-portage/command-not-found app-portage/pfl
 status "Installing humorous system administrator excuses..."
 echo "games-misc/fortune-mod-bofh-excuses ~amd64" >/etc/portage/package.accept_keywords/fortune-bofh
 chmod go+r /etc/portage/package.accept_keywords/fortune-bofh
-emerge -qv games-misc/fortune-mod-bofh-excuses
+emerge -qv games-misc/fortune-mod-bofh-excuses games-misc/cowsay
 cat >>/root/.zshrc <<'EOF'
 
 # Fun BOFH excuses, because why not!
 fortune bofh-excuses | cowsay -f tux
 EOF
+
+# Change the root shell.
+chsh -s /bin/zsh root
