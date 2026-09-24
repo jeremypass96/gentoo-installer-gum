@@ -225,11 +225,11 @@ run_step "Activating swapfile..." \
 msgbox "Swapfile successfully created and activated!"
 
 # Copy scripts to /mnt/gentoo before chroot'ing.
-status "Copying installer scripts to /mnt/gentoo/gentoo-installer..."
-mkdir -p /mnt/gentoo/gentoo-installer
-cp "$SCRIPT_DIR"/configure.sh /mnt/gentoo/gentoo-installer
-mkdir -p /mnt/gentoo/gentoo-installer/modules
-cp "$SCRIPT_DIR"/modules/*.sh /mnt/gentoo/gentoo-installer/modules
+status "Copying installer scripts to /mnt/gentoo/gentoo-installer-gum..."
+mkdir -p /mnt/gentoo/gentoo-installer-gum
+cp "$SCRIPT_DIR"/configure.sh /mnt/gentoo/gentoo-installer-gum
+mkdir -p /mnt/gentoo/gentoo-installer-gum/modules
+cp "$SCRIPT_DIR"/modules/*.sh /mnt/gentoo/gentoo-installer-gum/modules
 
 # Enter the /mnt/gentoo directory.
 cd /mnt/gentoo || exit
