@@ -47,6 +47,9 @@ cp -v /etc/skel/.config/helix/config.toml /home/"$name"/.config/helix/config.tom
 cp -v /etc/skel/.config/helix/languages.toml /home/"$name"/.config/helix/languages.toml
 chmod go+r /home/"$name"/.config/helix/*.toml
 chown -R "$name":"$name" /home/"$name"/.config/helix
+mkdir -p /root/.config/helix
+cp -v /etc/skel/.config/helix/config.toml /root/.config/helix/config.toml
+cp -v /etc/skel/.config/helix/languages.toml /root/.config/helix/languages.toml
 
 # -------------------------------------------------
 # Install Helix Markdown formatter/language-server.
