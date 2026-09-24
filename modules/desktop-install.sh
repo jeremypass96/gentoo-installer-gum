@@ -208,13 +208,13 @@ esac
 # ----------------------------------
 if [ "$DESKTOP" != "none" ]; then
 	emerge -qv x11-themes/papirus-icon-theme
-	bash "$SCRIPT_DIR"/posy-cursors-install.sh
-	bash "$SCRIPT_DIR"/xlibre-install.sh
+	bash "$SCRIPT_DIR"/modules/posy-cursors-install.sh
+	bash "$SCRIPT_DIR"/modules/xlibre-install.sh
 	# Enable 'haveged', a RNG.
 	emerge -qv sys-apps/haveged
 	rc-update add haveged boot && rc-service haveged start
 	if ask_yes_no "Enable Windows-style hardware notifications?"; then
-		bash "$SCRIPT_DIR"/hardware-notify.sh
+		bash "$SCRIPT_DIR"/modules/hardware-notify.sh
 		if [ "$DESKTOP" = "plasma" ]; then
 			echo "X-KDE-autostart-after=panel" >>"/home/$name/.config/autostart/hardware-notify.desktop"
 		fi
