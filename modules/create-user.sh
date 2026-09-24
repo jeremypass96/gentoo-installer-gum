@@ -25,7 +25,8 @@
 # ------------------------------------------------------
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/common.sh"
+# Don't redefine SCRIPT_DIR here.
+source "$SCRIPT_DIR/modules/common.sh"
 require_root
 require_chroot
 screen
@@ -67,3 +68,5 @@ while true; do
 		msgbox_error "Failed to create user '$name'."
 	fi
 done
+
+export name

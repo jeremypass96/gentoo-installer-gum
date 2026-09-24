@@ -1,5 +1,5 @@
 #!/bin/bash
-# desktop-selector.sh - Gentoo installer module for selecting a desktop environment.
+# desktop-install.sh - Gentoo installer module for installing a desktop environment.
 # Copyright (C) 2026 Jeremy Passarelli <recordguy96@aol.com>
 #
 # This program is free software; you can redistribute it and/or modify
@@ -17,26 +17,17 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 # -------------------------------------------------------------------------
-# Gentoo Linux Installer Module: Desktop Environment Selection/Installation
+# Gentoo Linux Installer Module: Desktop Environment Installation
 # -------------------------------------------------------------------------
-# Presents a list of supported desktop environments, configures
-# the selected desktop environment, # display manager, and
-# common graphical components.
-# -------------------------------------------------------------
+# Installs and configures the selected desktop environment,
+# display manager, and common graphical components.
+# ---------------------------------------------------------
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
 require_root
 require_chroot
 screen
-
-DESKTOP=$(gum choose --label-delimiter=":" --header "Choose a desktop environment to install:" \
-	"Sonic Desktop Environment (SonicDE)":sonicde \
-	"Xfce":xfce \
-	"MATE":mate \
-	"Cinnamon":cinnamon \
-	"Trinity Desktop Environment (TDE)":tde \
-	"No desktop environment (CLI-only)":none)
 
 case "$DESKTOP" in
 sonicde)
