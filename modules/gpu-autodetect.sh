@@ -60,12 +60,12 @@ VIDEO_FLAGS=""
 case "$GPU_LINE" in
 *VMware* | *SVGA\ II* | *vmwgfx*)
 	GPU_VENDOR="vmware"
-	VIDEO_FLAGS="vmware"
+	VIDEO_FLAGS=""
 	;;
 
 *VirtualBox* | *InnoTek* | *Oracle\ Corporation* | *VBoxVGA* | *VMSVGA*)
 	GPU_VENDOR="virtualbox"
-	VIDEO_FLAGS="vmware"
+	VIDEO_FLAGS="virtualbox"
 	;;
 
 *Red\ Hat* | *QXL* | *Spice*)
@@ -193,7 +193,6 @@ if [ "$GPU_VENDOR" = "vmware" ]; then
 	rc-update add vmware-tools
 	cat <<EOF >/etc/portage/package.use/vmware
 x11-libs/libdrm libkms
-media-libs/mesa xa
 EOF
 	chmod go+r /etc/portage/package.use/vmware
 fi
@@ -209,7 +208,6 @@ if [ "$GPU_VENDOR" = "virtualbox" ]; then
 	echo vboxdrv >/etc/modules-load.d/virtualbox.conf
 	cat <<EOF >/etc/portage/package.use/virtualbox
 x11-libs/libdrm libkms
-media-libs/mesa xa
 EOF
 	chmod go+r /etc/portage/package.use/virtualbox
 fi
