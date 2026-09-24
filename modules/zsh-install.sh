@@ -127,6 +127,3 @@ cat >>/root/.zshrc <<'EOF'
 # Fun BOFH excuses, because why not!
 fortune bofh-excuses | cowsay -f tux
 EOF
-
-# Change the root shell.
-chsh -s /bin/zsh root
