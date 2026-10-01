@@ -255,8 +255,11 @@ bash "$SCRIPT_DIR"/modules/zsh-install.sh
 # Install and configure command-line utilities.
 bash "$SCRIPT_DIR"/modules/cli-utils-install.sh
 
-# Install and configure Helix editor.
+# Install and configure the Helix editor.
 bash "$SCRIPT_DIR"/modules/helix-install.sh
+
+# Install and configure Oh My Posh.
+bash "$SCRIPT_DIR/modules/oh-my-posh-install.sh"
 
 # Fix user's config permissions!
 chown -R "$name":"$name" /home/"$name"/.config
