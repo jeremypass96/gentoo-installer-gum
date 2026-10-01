@@ -36,12 +36,26 @@ sleep 1
 
 # Ensure `gum` is available.
 if ! command -v gum >/dev/null; then
-	status "Syncing Portage repos..."
-	emerge-webrsync
-	eselect repository enable jaredallard
-	emerge --sync jaredallard || die "Failed to sync jaredallard overlay."
-	status "Installing required package: gum..."
-	emerge -q dev-util/gum || die "Failed to install the required package: gum."
+	status "Fetching the latest Gum release..."
+	GUM_VERSION=$(wget -qO- \
+		"https://api.github.com/repos/charmbracelet/gum/releases/latest" |
+		sed -n 's/.*"tag_name": "\(.*\)".*/\1/p')
+	GUM_VERSION="${GUM_VERSION#v}"
+	GUM_URL="https://github.com/charmbracelet/gum/releases/download/v${GUM_VERSION}/gum_${GUM_VERSION}_Linux_x86_64.tar.gz"
+	GUM_CHECKSUMS="https://github.com/charmbracelet/gum/releases/download/v${GUM_VERSION}/checksums.txt"
+	GUM_DIR=$(mktemp -d)
+	GUM_ARCHIVE="$GUM_DIR/gum_${GUM_VERSION}_Linux_x86_64.tar.gz"
+	wget -q --show-progress "$GUM_URL" -O "$GUM_ARCHIVE" || die "Failed to download Gum."
+	wget -q --show-progress "$GUM_CHECKSUMS" -O "$GUM_DIR/checksums.txt" || die "Failed to download Gum checksums."
+	status "Verifying Gum checksum..."
+	(
+		cd "$GUM_DIR"
+		sha256sum --ignore-missing -c checksums.txt
+	) || die "Gum checksum verification failed."
+	status "Extracting Gum..."
+	tar -xzf "$GUM_ARCHIVE" -C "$GUM_DIR" || die "Failed to extract Gum."
+	chmod +x "$GUM_DIR/gum_${GUM_VERSION}_Linux_x86_64/gum"
+	export PATH="$GUM_DIR/gum_${GUM_VERSION}_Linux_x86_64:$PATH"
 fi
 
 msgbox "Welcome to the Gentoo Linux Installer!
