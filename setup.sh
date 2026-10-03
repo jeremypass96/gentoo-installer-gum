@@ -264,6 +264,7 @@ run_step "Downloading stage3 tarball..." \
 	wcurl "${BASEURL}/${STAGE3}"
 echo
 
+# shellcheck disable=SC2016
 run_step "Downloading checksums..." \
 	bash -c '
         wcurl "$1/${2}.CONTENTS.gz" &&
@@ -272,6 +273,7 @@ run_step "Downloading checksums..." \
         wcurl "$1/${2}.asc"
     ' _ "$BASEURL" "$STAGE3"
 
+# shellcheck disable=SC2016
 run_step "Verifying stage3 checksums..." \
 	bash -c '
         sha256sum --check "$1.sha256" &&
@@ -281,6 +283,7 @@ run_step "Verifying stage3 checksums..." \
         gpg --verify "$1.sha256"
     ' _ "$STAGE3"
 
+# shellcheck disable=SC2016
 run_step "Extracting stage3 tarball..." \
 	bash -c '
         xz -dc "$1" |
