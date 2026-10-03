@@ -64,7 +64,7 @@ The installer will perform the following tasks:
 - Synchronize the system clock.
 - Detect and partition the target disk.
 - Create the required filesystems.
-- Mount the /boot and root partitions.
+- Mount the boot and root partitions.
 - Create a swapfile.
 - Download and extract the latest stage3 tarball.
 - Generate the fstab (using genfstab).
