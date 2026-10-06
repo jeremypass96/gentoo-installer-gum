@@ -54,6 +54,7 @@ if ! command -v gum >/dev/null; then
 	) || die "Gum checksum verification failed."
 	status "Extracting Gum..."
 	tar -xzf "$GUM_ARCHIVE" -C "$GUM_DIR" || die "Failed to extract Gum."
+	rm -rf "$GUM_ARCHIVE"
 	chmod +x "$GUM_DIR/gum_${GUM_VERSION}_Linux_x86_64/gum"
 	export PATH="$GUM_DIR/gum_${GUM_VERSION}_Linux_x86_64:$PATH"
 fi
