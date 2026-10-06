@@ -42,7 +42,7 @@ run_step "Syncing Portage repository..." \
 	emerge --sync
 
 # Install eselect module for adding repositories to the system.
-if ! command -v eselect modules has repository >/dev/dull 2>&1; then
+if ! eselect modules has repository >/dev/dull 2>&1; then
 	status "Installing 'repository' eselect module for adding repos to Gentoo."
 	emerge -q app-eselect/eselect-repository
 fi
