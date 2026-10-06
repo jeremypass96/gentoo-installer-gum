@@ -34,7 +34,8 @@ emerge-webrsync
 
 # Auto select mirrors.
 emerge -qv1 app-portage/mirrorselect
-mirrorselect -s10 -b10 -D -o >>/etc/portage/make.conf
+run_step "Auto-selecting download mirrors..." \
+	mirrorselect -s10 -b10 -D -o >>/etc/portage/make.conf
 
 # Syncing Portage repository.
 emerge --sync
