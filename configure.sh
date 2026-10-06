@@ -38,10 +38,11 @@ run_step "Auto-selecting download mirrors..." \
 	mirrorselect -s10 -b10 -D -o >>/etc/portage/make.conf
 
 # Syncing Portage repository.
-emerge --sync
+run_step "Syncing Portage repository..." \
+	emerge --sync
 
 # Install eselect module for adding repositories to the system.
-if ! command -v 'eselect repository' >/dev/dull 2>&1; then
+if ! command -v eselect modules has repository >/dev/dull 2>&1; then
 	status "Installing 'repository' eselect module for adding repos to Gentoo."
 	emerge -q app-eselect/eselect-repository
 fi
