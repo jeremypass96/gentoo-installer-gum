@@ -32,9 +32,9 @@ cp /usr/share/portage/config/repos.conf /etc/portage/repos.conf/gentoo.conf
 # Update the Gentoo ebuild repository.
 emerge-webrsync
 
-# Select mirrors.
+# Auto select mirrors.
 emerge -qv1 app-portage/mirrorselect
-mirrorselect -i -o >>/etc/portage/make.conf
+mirrorselect -s10 -b10 -D -o >>/etc/portage/make.conf
 
 # Syncing Portage repository.
 emerge --sync
