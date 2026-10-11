@@ -122,13 +122,8 @@ status "Rebuilding packages using preserved libraries..."
 emerge @preserved-rebuild
 success "System cleanup complete."
 
-# Install eselect repository tool.
-clear
-status "Installing eselect repository tool..."
-emerge -qv app-eselect/eselect-repository
-
 # Install selected desktop environment.
-bash "$SCRIPT_DIR/modules/desktop-install.sh"
+bash "$SCRIPT_DIR"/modules/desktop-install.sh
 
 # Install a better manpager.
 clear
@@ -261,7 +256,7 @@ bash "$SCRIPT_DIR"/modules/cli-utils-install.sh
 bash "$SCRIPT_DIR"/modules/helix-install.sh
 
 # Install and configure Oh My Posh.
-bash "$SCRIPT_DIR/modules/oh-my-posh-install.sh"
+bash "$SCRIPT_DIR"/modules/oh-my-posh-install.sh
 
 # Fix user's config permissions!
 chown -R "$name":"$name" /home/"$name"/.config
