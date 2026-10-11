@@ -153,5 +153,5 @@ cp "$BOOKMARKS" "$USER_BRAVE/Bookmarks"
 chown -R "$name:$name" "$USER_HOME/.config/BraveSoftware"
 
 # Cleanup
-emerge -ac app-misc/jq
+emerge -c app-misc/jq
 rm -rf "$BRAVE_TEMPLATE"
