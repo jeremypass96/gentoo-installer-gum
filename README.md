@@ -63,7 +63,7 @@ A fully interactive installer for Gentoo Linux, built with Charm's `gum`, that s
 The primary **installation** script, executed from the Gentoo LiveCD/DVD before entering the Gentoo environment.
 
 * Verifies network connectivity, DNS resolution, and HTTPS access.
-* Installs the required `gum` package.
+* Downloads, verifies, and extracts the latest Gum release.
 * Synchronizes the system clock using Chrony.
 * Detects available installation disks and automatically excludes the current boot device.
 * Automatically selects the only available installation disk, or presents a selection menu when multiple disks are detected.
