@@ -215,7 +215,7 @@ if [ "$DESKTOP" != "none" ]; then
 	rc-update add haveged boot && rc-service haveged start
 	if ask_yes_no "Enable Windows-style hardware notifications?"; then
 		bash "$SCRIPT_DIR"/modules/hardware-notify.sh
-		if [ "$DESKTOP" = "plasma" ]; then
+		if [ "$DESKTOP" = "sonicde" ]; then
 			echo "X-KDE-autostart-after=panel" >>"/home/$name/.config/autostart/hardware-notify.desktop"
 		fi
 	fi

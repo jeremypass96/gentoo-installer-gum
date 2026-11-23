@@ -93,10 +93,22 @@ ui_header() {
 }
 
 # Yes/No helper: returns 0 for YES, 1 for NO.
-# Usage: if ask_yes_no "Question?" yes; then ...; fi
+# Usage: ask_yes_no "Question?" [yes|no]
 ask_yes_no() {
+	local question="$1"
+	local default="${2:-no}"
 	screen
-	gum confirm "$1"
+	case "$default" in
+	yes)
+		gum confirm --default=true "$question"
+		;;
+	no)
+		gum confirm --default=false "$question"
+		;;
+	*)
+		die "Invalid default answer: $default (use yes or no)."
+		;;
+	esac
 }
 
 run_step() {

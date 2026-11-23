@@ -92,7 +92,7 @@ bash "$SCRIPT_DIR"/modules/hostname.sh
 source "$SCRIPT_DIR"/modules/desktop-selector.sh
 
 # Backup existing package.use files.
-bash "$SCRIPT_DIR"/modules/package-use-backup.sh
+source "$SCRIPT_DIR"/modules/package-use-backup.sh
 
 # Configure USE flags.
 bash "$SCRIPT_DIR"/modules/package-use.sh
@@ -268,17 +268,17 @@ chsh -s /bin/zsh
 status "Setting the user's default shell to Zsh..."
 chsh -s /bin/zsh "$name"
 
-# Remove temporary installation files.
-status "Removing temporary installation files..."
-rm /stage3-*.tar.*
-rm -rf /gentoo-installer-gum
-
 # Install an enhanced adduser utility.
 status "Installing an improved user management utility..."
 emerge -qv app-admin/superadduser
 
 # Install GRUB.
 bash "$SCRIPT_DIR"/modules/grub-install.sh
+
+# Remove temporary installation files.
+status "Removing temporary installation files..."
+rm /stage3-*.tar.*
+rm -rf /gentoo-installer-gum
 
 # Exit chroot.
 exit
