@@ -93,6 +93,11 @@ esac
 # AMD family selection (Radeon)
 # ---------------------------
 
+enable_amdgpu_libdrm() {
+	echo "x11-libs/libdrm video_cards_radeon" >/etc/portage/package.use/libdrm
+	chmod go+r /etc/portage/package.use/libdrm
+}
+
 choose_amd_family() {
 	local gpu_text="$1"
 	local family=""
@@ -103,17 +108,15 @@ choose_amd_family() {
 	# Southern Islands: CAPE VERDE, PITCAIRN, TAHITI, OLAND, HAINAN
 	if echo "$gpu_text" | grep -qi 'Cape Verde\|Pitcairn\|Tahiti\|Oland\|Hainan'; then
 		family="Southern Islands"
-		flags="radeon radeonsi"
-		echo "x11-libs/libdrm video_cards_amdgpu" >/etc/portage/package.use/libdrm
-		chmod go+r /etc/portage/package.use/libdrm
+		flags="amdgpu radeonsi"
+		enable_amdgpu_libdrm
 	fi
 
 	# Sea Islands: BONAIRE, KABINI, MULLINS, KAVERI, HAWAII
 	if echo "$gpu_text" | grep -qi 'Bonaire\|Kabini\|Mullins\|Kaveri\|Hawaii'; then
 		family="Sea Islands"
-		flags="radeon radeonsi"
-		echo "x11-libs/libdrm video_cards_amdgpu" >/etc/portage/package.use/libdrm
-		chmod go+r /etc/portage/package.use/libdrm
+		flags="amdgpu radeonsi"
+		enable_amdgpu_libdrm
 	fi
 
 	if [ -n "$family" ]; then
@@ -134,13 +137,12 @@ choose_amd_family() {
 		gum choose \
 			--header "Detected: $gpu_text
 
-Select your GPU family (see Gentoo Radeon Wiki):" \
+Select your GPU family:" \
 			"r100 - Radeon 7xxx / 320-345 (very old)" \
 			"r200 - Radeon 8xxx-9250" \
 			"r300 - X1300-X2300 / HD2300 etc." \
 			"r600 - HD2400-HD6990" \
-			"south - Southern Islands" \
-			"sea - Sea Islands"
+			"amdgpu - Southern Islands and newer (kernel 6.19+)"
 	)
 
 	choice=${choice%% *}
@@ -162,13 +164,10 @@ Select your GPU family (see Gentoo Radeon Wiki):" \
 		AMD_FAMILY="R600/R700/Evergreen/Northern Islands"
 		VIDEO_FLAGS="radeon r600"
 		;;
-	south)
-		AMD_FAMILY="Southern Islands"
-		VIDEO_FLAGS="radeon radeonsi"
-		;;
-	sea)
-		AMD_FAMILY="Sea Islands"
-		VIDEO_FLAGS="radeon radeonsi"
+	amdgpu)
+		AMD_FAMILY="AMDGPU (Southern Islands and newer)"
+		VIDEO_FLAGS="amdgpu radeonsi"
+		enable_amdgpu_libdrm
 		;;
 	esac
 
