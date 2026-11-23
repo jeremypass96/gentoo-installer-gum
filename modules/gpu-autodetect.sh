@@ -202,6 +202,7 @@ if [ "$GPU_VENDOR" = "virtualbox" ]; then
 	rc-update add virtualbox-guest-additions
 	rc-update add dbus
 	rc-service virtualbox-guest-additions start
+	# shellcheck disable=SC2154
 	gpasswd -a "$name" vboxguest
 	modprobe vboxdrv
 	echo vboxdrv >/etc/modules-load.d/virtualbox.conf
