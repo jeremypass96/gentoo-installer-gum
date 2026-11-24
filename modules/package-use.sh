@@ -178,20 +178,16 @@ fi
 case "$DESKTOP" in
 sonicde)
 	cat <<EOF >/etc/portage/package.use/kde
-kde-plasma/plasma-meta -sdk -discover -flatpak -plymouth -thunderbolt -unsupported -wacom -xwayland
-kde-apps/kde-apps-meta -pim -education -games -accessibility -graphics -multimedia -network -sdk -utils
-kde-apps/kdecore-meta -webengine
 kde-apps/ark zip
-kde-apps/kdeutils-meta -webengine -gpg -plasma 7zip
-kde-plasma/plasma-login-sessions -wayland
 dev-qt/qtpositioning geoclue
 kde-apps/thumbnailers video
-kde-plasma/powerdevil brightness-control
 app-misc/ddcutil user-permissions
 EOF
 	cat <<EOF >/etc/portage/package.use/sonicde
-sonicde-base/sonic-meta -firewall
-sonicde-base/sonic-win lock
+sonicde-base/sonicde-meta -firewall -sdk -plymouth -thunderbolt -unsupported -wacom wallpapers -webengine
+sonicde-base/sonic-win lock nightlight
+sonicde-frameworks/sonic-frameworks-file-metadata
+sonicde-base/sonic-power-management brightness-control
 EOF
 	;;
 

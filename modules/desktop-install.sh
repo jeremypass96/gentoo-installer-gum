@@ -37,14 +37,11 @@ sonicde)
 location = /var/db/repos/sonicde
 sync-type = git
 sync-uri = https://github.com/sonicde-gentoo/portage
+priority = 50
 EOF
 	emaint sync -r sonicde
 	echo "*/*::sonicde ~amd64" >/etc/portage/package.accept_keywords/00-sonicde
-	cat <<EOF >/etc/portage/package.accept_keywords/kde
-kde-plasma/*
-kde-frameworks/*
-EOF
-	emerge -qv sonicde-base/sonic-meta kde-apps/kde-apps-meta kde-apps/kdecore-meta kde-plasma/kwallet-pam kde-apps/kcalc kde-apps/kcharselect kde-apps/sweeper kde-misc/kweather sys-block/partitionmanager app-cdr/dolphin-plugins-mountiso kde-misc/kclock kde-misc/kdeconnect kde-apps/okular kde-apps/gwenview kde-apps/filelight kde-apps/ark kde-apps/ffmpegthumbs kde-apps/audiocd-kio kde-apps/kwalletmanager
+	emerge -qv sonicde-base/sonicde-meta sonicde-base/sonic-partition-manager kde-apps/kcalc kde-apps/kcharselect kde-apps/sweeper kde-misc/kweather app-cdr/dolphin-plugins-mountiso kde-misc/kclock kde-misc/kdeconnect kde-apps/okular kde-apps/gwenview kde-apps/filelight kde-apps/ark kde-apps/ffmpegthumbs kde-apps/audiocd-kio kde-apps/kwalletmanager
 	if ask_yes_no "Do you want Dolphin to integrate with Git repositories?"; then
 		emerge -qv kde-apps/dolphin-plugins-git
 	fi
