@@ -94,7 +94,7 @@ esac
 # ---------------------------
 
 enable_amdgpu_libdrm() {
-	echo "x11-libs/libdrm video_cards_radeon" >/etc/portage/package.use/libdrm
+	echo "x11-libs/libdrm video_cards_amdgpu" >/etc/portage/package.use/libdrm
 	chmod go+r /etc/portage/package.use/libdrm
 }
 
@@ -108,7 +108,7 @@ choose_amd_family() {
 	# Southern Islands: CAPE VERDE, PITCAIRN, TAHITI, OLAND, HAINAN
 	if echo "$gpu_text" | grep -qi 'Cape Verde\|Pitcairn\|Tahiti\|Oland\|Hainan'; then
 		family="Southern Islands"
-		flags="amdgpu radeonsi"
+		flags="radeon radeonsi"
 		enable_amdgpu_libdrm
 	fi
 
@@ -166,7 +166,7 @@ Select your GPU family:" \
 		;;
 	amdgpu)
 		AMD_FAMILY="AMDGPU (Southern Islands and newer)"
-		VIDEO_FLAGS="amdgpu radeonsi"
+		VIDEO_FLAGS="radeon radeonsi"
 		enable_amdgpu_libdrm
 		;;
 	esac
