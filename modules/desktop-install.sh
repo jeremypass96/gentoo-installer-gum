@@ -41,7 +41,7 @@ priority = 50
 EOF
 	emaint sync -r sonicde
 	echo "*/*::sonicde ~amd64" >/etc/portage/package.accept_keywords/00-sonicde
-	emerge -qv sonicde-base/sonicde-meta sonicde-base/sonic-partition-manager kde-apps/kcalc kde-apps/kcharselect kde-apps/sweeper kde-misc/kweather app-cdr/dolphin-plugins-mountiso kde-misc/kclock kde-misc/kdeconnect kde-apps/okular kde-apps/gwenview kde-apps/filelight kde-apps/ark kde-apps/ffmpegthumbs kde-apps/audiocd-kio kde-apps/kwalletmanager
+	emerge -qv sonicde-base/sonicde-meta sonicde-base/sonic-partition-manager sonicde-base/sonic-accounts-integration kde-apps/kcalc kde-apps/kcharselect kde-apps/sweeper kde-misc/kweather app-cdr/dolphin-plugins-mountiso kde-misc/kdeconnect kde-apps/okular kde-apps/gwenview kde-apps/filelight kde-apps/ark kde-apps/ffmpegthumbs kde-apps/audiocd-kio kde-apps/kwalletmanager
 	if ask_yes_no "Do you want Dolphin to integrate with Git repositories?"; then
 		emerge -qv kde-apps/dolphin-plugins-git
 	fi
@@ -63,9 +63,9 @@ EOF
 	# For kde-frameworks/kfilemetadata.
 	emerge -qv app-text/catdoc
 
-	# Enable SDDM and elogind.
-	sed -i 's/DISPLAYMANAGER="xdm"/DISPLAYMANAGER="sddm"/' /etc/conf.d/display-manager
-	rc-update add display-manager default
+	# Enable SonicDE login manager and elogind.
+	sed -i 's/DISPLAYMANAGER="xdm"/DISPLAYMANAGER="soniclogin"/' /etc/conf.d/display-manager
+	rc-update add soniclogin default
 	rc-update add elogind boot && rc-service elogind start
 
 	# Enable ufw.
