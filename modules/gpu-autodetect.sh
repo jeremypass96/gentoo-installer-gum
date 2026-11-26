@@ -142,7 +142,7 @@ Select your GPU family:" \
 			"r200 - Radeon 8xxx-9250" \
 			"r300 - X1300-X2300 / HD2300 etc." \
 			"r600 - HD2400-HD6990" \
-			"amdgpu - Southern Islands and newer (kernel 6.19+)"
+			"amdgpu - Southern Islands and newer"
 	)
 
 	choice=${choice%% *}
