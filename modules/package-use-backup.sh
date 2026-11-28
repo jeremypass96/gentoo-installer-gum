@@ -50,7 +50,6 @@ USE_FILES=(
 	networkmanager
 	cups
 	hplip
-	kde
 	sonicde
 	xfce
 	mate

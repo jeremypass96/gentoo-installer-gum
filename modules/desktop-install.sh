@@ -46,26 +46,20 @@ EOF
 		emerge -qv kde-apps/dolphin-plugins-git
 	fi
 
-	mkdir -p /etc/skel/.config
-	wcurl --curl-options="--progress-bar" -o /etc/skel/.config/kdeglobals https://raw.githubusercontent.com/jeremypass96/linux-stuff/refs/heads/main/Dotfiles/config/kdeglobals
-	mkdir -p /home/"$name"/.config
-	cp -v /etc/skel/.config/kdeglobals /home/"$name"/.config/kdeglobals
-	chown "$name":"$name" /home/"$name"/.config/kdeglobals
-
 	if ask_yes_no $'Do you want to install some KDE games?\n\nThis will install the following games:\n- Kapman\n- KPatience\n- KMines\n- Bomber\n- KSnakeDuel\n- Klickety\n- KBlocks\n- KDiamond\n- KBounce\n- KNetWalk\n- KBreakOut'; then
 		emerge -qv kde-apps/kapman kde-apps/kpat kde-apps/kmines kde-apps/bomber kde-apps/ksnakeduel kde-apps/klickety kde-apps/kblocks kde-apps/kdiamond kde-apps/kbounce kde-apps/knetwalk kde-apps/kbreakout
 	fi
 
-	# For kde-plasma/kinfocenter.
+	# For sonicde-base/sonic-system-info.
 	emerge -qv x11-apps/xdpyinfo sys-apps/pciutils
 	rc-update add power-profiles-daemon default
 
-	# For kde-frameworks/kfilemetadata.
+	# For sonicde-frameworks/sonic-frameworks-file-metadata.
 	emerge -qv app-text/catdoc
 
 	# Enable SonicDE login manager and elogind.
 	sed -i 's/DISPLAYMANAGER="xdm"/DISPLAYMANAGER="soniclogin"/' /etc/conf.d/display-manager
-	rc-update add soniclogin default
+	rc-update add display-manager default
 	rc-update add elogind boot && rc-service elogind start
 
 	# Enable ufw.
@@ -141,6 +135,7 @@ tde)
 	rc-update add display-manager default
 	rc-update add elogind boot && rc-service elogind start
 	add_global_use_flag "pulseaudio pipewire"
+	# shellcheck disable=SC2154
 	emerge -qv media-video/pipewire && echo "gentoo-pipewire-launcher &" /home/"$name"/.xprofile
 	emerge -qv media-sound/pavucontrol
 	;;
