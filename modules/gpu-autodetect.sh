@@ -142,7 +142,8 @@ Select your GPU family:" \
 			"r200 - Radeon 8xxx-9250" \
 			"r300 - X1300-X2300 / HD2300 etc." \
 			"r600 - HD2400-HD6990" \
-			"amdgpu - Southern Islands and newer"
+			"south - Southern Islands - HD77xx–79xx, R7 240–260, R9 270–280" \
+			"sea - Sea Islands - Bonaire, Kabini, Kaveri, Hawaii, etc."
 	)
 
 	choice=${choice%% *}
@@ -164,9 +165,14 @@ Select your GPU family:" \
 		AMD_FAMILY="R600/R700/Evergreen/Northern Islands"
 		VIDEO_FLAGS="radeon r600"
 		;;
-	amdgpu)
-		AMD_FAMILY="AMDGPU (Southern Islands and newer)"
+	south)
+		AMD_FAMILY="Southern Islands"
 		VIDEO_FLAGS="radeon radeonsi"
+		enable_amdgpu_libdrm
+		;;
+	sea)
+		AMD_FAMILY="Sea Islands"
+		VIDEO_FLAGS="amdgpu radeonsi"
 		enable_amdgpu_libdrm
 		;;
 	esac
